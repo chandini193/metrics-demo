@@ -103,10 +103,13 @@ Access at: http://localhost:9093
 kubectl apply -f ./sample-service.yaml
 
 # Wait for the pod to be ready
-kubectl wait --namespace demo --for=condition=ready pod --selector=app.kubernetes.io/name=prometheus-example-app --timeout=300s
+kubectl wait --namespace demo --for=condition=ready pod --selector=app=prometheus-example-app --timeout=300s
 
 # Get the NodePort
 NODE_PORT=$(kubectl get svc prometheus-example-app -n demo -o jsonpath='{.spec.ports[0].nodePort}')
+
+# Enable port-forward to access the application
+kubectl port-forward svc/prometheus-example-app -n demo 8080:$NODE_PORT
 
 # Access the application
 curl http://localhost:$NODE_PORT
